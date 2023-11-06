@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jiu-jitsu-notes"
+version = "0.0.1"
+dependencies = []
+
+[tool.setuptools]
+packages = ["jiu_jitsu_notes"]
