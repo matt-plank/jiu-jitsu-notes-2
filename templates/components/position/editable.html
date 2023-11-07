@@ -1,0 +1,10 @@
+<form
+  hx-put="/positions/{{ position.id }}"
+  hx-swap="outerHTML"
+  hx-trigger="submit"
+>
+  <input type="text" name="name" value="{{ position.name }}" />
+  <input type="text" name="description" value="{{ position.description }}" />
+
+  <button type="submit">Save</button>
+</form>

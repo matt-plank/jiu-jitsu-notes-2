@@ -23,9 +23,9 @@ class Position(Base):
 
     name: Mapped[str]
     description: Mapped[str]
-    submission: Mapped[bool]
+    submission: Mapped[bool] = mapped_column(default=False)
 
-    group_id: Mapped[int] = mapped_column(ForeignKey("position_groups.id"))
+    group_id: Mapped[int | None] = mapped_column(ForeignKey("position_groups.id"))
     group: Mapped[PositionGroup] = relationship(back_populates="positions")
 
     techniques_from: Mapped[list["Technique"]] = relationship(
