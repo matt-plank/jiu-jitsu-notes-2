@@ -29,11 +29,13 @@ class Position(Base):
     group: Mapped[PositionGroup] = relationship(back_populates="positions")
 
     techniques_from: Mapped[list["Technique"]] = relationship(
-        back_populates="from_position"
+        back_populates="from_position",
+        foreign_keys="Technique.from_position_id",
     )
 
     techniques_to: Mapped[list["Technique"]] = relationship(
-        back_populates="to_position"
+        back_populates="to_position",
+        foreign_keys="Technique.to_position_id",
     )
 
 
@@ -46,7 +48,13 @@ class Technique(Base):
     description: Mapped[str]
 
     from_position_id: Mapped[int] = mapped_column(ForeignKey("positions.id"))
-    from_position: Mapped[Position] = relationship(back_populates="techniques_from")
+    from_position: Mapped[Position] = relationship(
+        back_populates="techniques_from",
+        foreign_keys=[from_position_id],
+    )
 
     to_position_id: Mapped[int] = mapped_column(ForeignKey("positions.id"))
-    to_position: Mapped[Position] = relationship(back_populates="techniques_to")
+    to_position: Mapped[Position] = relationship(
+        back_populates="techniques_to",
+        foreign_keys=[to_position_id],
+    )
