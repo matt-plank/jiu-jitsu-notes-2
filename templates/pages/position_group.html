@@ -5,10 +5,10 @@
     {% include 'components/head.html' %}
   </head>
   <body>
-    <h1>{{ group.name }}</h1>
-    <p>{{group.description }}</p>
-
-    <hr />
+    <div class="w-full p-3 bg-slate-700">
+      <h1 class="text-white text-2xl">{{ group.name }}</h1>
+    </div>
+    <p class="mb-5 p-2 text-gray-600">{{group.description }}</p>
 
     {% for position in group.positions %} {% include
     'components/position/static.html' %} {% endfor %}
