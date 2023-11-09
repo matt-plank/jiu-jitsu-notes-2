@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Groups</title>
+
+    <script
+      src="https://unpkg.com/htmx.org@1.9.8"
+      integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <h1>Groups</h1>
+
+    <hr />
+
+    {% for group in groups %}
+      {% include "components/group/static.html" %}
+      {% for position in group.positions %}
+        {% include 'components/position/static.html' %}
+      {% endfor %}
+    {% endfor %}
+
+    <button hx-post="/groups/edit" hx-swap="beforebegin">
+      New Group
+    </button>
+  </body>
+</html>

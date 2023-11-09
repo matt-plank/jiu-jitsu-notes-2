@@ -9,3 +9,8 @@ class NewPosition(BaseModel):
 class PartialPosition(BaseModel):
     name: str | None = Field(None)
     description: str | None = Field(None)
+
+
+class NewGroup(BaseModel):
+    name: str
+    description: str
