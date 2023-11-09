@@ -16,5 +16,12 @@
 
     {% for position in group.positions %} {% include
     'components/position/static.html' %} {% endfor %}
+
+    <button
+      hx-post="/positions/edit?groupId={{ group.id }}"
+      hx-swap="beforebegin"
+    >
+      New Position
+    </button>
   </body>
 </html>

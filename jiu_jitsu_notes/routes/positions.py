@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..models import Position
-from ..schemas import PartialPosition
+from ..schemas import NewPosition, PartialPosition
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -46,7 +46,7 @@ async def update_position(
         )
 
     form_data = await request.form()
-    position = PartialPosition(**form_data)
+    position = PartialPosition(**form_data)  # type: ignore
 
     if position.name is not None:
         db_position.name = position.name
@@ -65,8 +65,35 @@ async def update_position(
     )
 
 
+@router.post("/")
+async def create_position(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    form_data = await request.form()
+    position = NewPosition(**form_data)  # type: ignore
+    db_position = Position(**position.model_dump())
+
+    group_id_str: str | None = request.query_params.get("groupId")
+
+    if group_id_str is not None:
+        group_id = int(group_id_str)
+        db_position.group_id = group_id
+
+    db.add(db_position)
+    db.commit()
+
+    return templates.TemplateResponse(
+        "components/position/static.html",
+        {
+            "request": request,
+            "position": position,
+        },
+    )
+
+
 @router.get("/{position_id}/edit")
-async def get_editable_position(request: Request, position_id: int, db: Session = Depends(get_db)):
+async def get_editable(request: Request, position_id: int, db: Session = Depends(get_db)):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
 
     if position is None:
@@ -80,5 +107,16 @@ async def get_editable_position(request: Request, position_id: int, db: Session 
         {
             "request": request,
             "position": position,
+        },
+    )
+
+
+@router.post("/edit")
+async def new_editable(request: Request):
+    return templates.TemplateResponse(
+        "components/position/new.html",
+        {
+            "request": request,
+            "group_id": request.query_params.get("groupId"),
         },
     )
