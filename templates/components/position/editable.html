@@ -2,9 +2,10 @@
   hx-put="/positions/{{ position.id }}"
   hx-swap="outerHTML"
   hx-trigger="submit"
+  class="flex gap-3 overflow-x-auto m-0 items-center"
 >
-  <input type="text" name="name" value="{{ position.name }}" />
-  <input type="text" name="description" value="{{ position.description }}" />
+  <button type="submit" class="px-2 p-1 rounded-md bg-slate-700 text-white">Save</button>
 
-  <button type="submit">Save</button>
+  <input type="text" name="name" value="{{ position.name }}" class="border px-2 p-1 rounded-md min-w-[13rem] whitespace-nowrap !outline-none" />
+  <input type="text" name="description" value="{{ position.description }}" class="border px-2 p-1 rounded-md whitespace-nowrap !outline-none" />
 </form>
