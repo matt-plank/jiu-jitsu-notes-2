@@ -8,10 +8,13 @@
     <div class="w-full p-3 bg-slate-700">
       <h1 class="text-white text-2xl">{{ group.name }}</h1>
     </div>
-    <p class="mb-5 p-2 text-gray-600">{{group.description }}</p>
+    <p class="p-2 text-gray-600">{{group.description }}</p>
 
-    {% for position in group.positions %} {% include
-    'components/position/static.html' %} {% endfor %}
+    <div class="p-3 flex flex-col gap-2">
+      {% for position in group.positions %}
+        {% include 'components/position_title/static.html' %}
+      {% endfor %}
+    </div>
 
     <button
       hx-post="/positions/edit?groupId={{ group.id }}"

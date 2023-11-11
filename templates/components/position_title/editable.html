@@ -1,0 +1,20 @@
+<form
+  hx-put="/positions/{{ position.id }}?format={{ format }}"
+  hx-swap="outerHTML"
+  hx-trigger="submit"
+  class="flex gap-3 overflow-x-auto m-0 items-center text-2xl"
+>
+  <input
+    type="text"
+    name="name"
+    value="{{ position.name }}"
+    class="border px-2 p-1 rounded-md min-w-[13rem] whitespace-nowrap !outline-none"
+  />
+
+  <button
+    type="submit"
+    class="px-2 p-1 rounded-md bg-slate-700 text-white"
+  >
+    Save
+  </button>
+</form>

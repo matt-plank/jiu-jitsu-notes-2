@@ -40,6 +40,7 @@ async def get_group(request: Request, group_name: str, db: Session = Depends(get
         {
             "request": request,
             "group": group,
+            "format": "title",
         },
     )
 
