@@ -2,10 +2,10 @@
   hx-get="/techniques/{{ technique.id }}/editable"
   hx-swap="outerHTML"
   hx-trigger="click"
-  class="flex gap-2 items-center"
+  class="flex gap-2 items-center overflow-x-auto"
 >
   <p class="px-2 py-1.5 border rounded-md min-w-[13rem]">{{ technique.name }}</p>
-  <p class="px-2 py-1.5 border rounded-md min-w-[13rem]">{{ technique.description }}</p>
+  <p class="px-2 py-1.5 border rounded-md min-w-content whitespace-nowrap">{{ technique.description }}</p>
   to
   <p class="px-2 py-1.5 border rounded-md min-w-[13rem]">{{ technique.to_position.name }}</p>
 </div>
