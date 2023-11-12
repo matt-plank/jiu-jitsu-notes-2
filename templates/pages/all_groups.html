@@ -19,10 +19,14 @@
           {% endfor %}
         </div>
       {% endfor %}
-    </div>
 
-    <button hx-post="/groups/edit" hx-swap="beforebegin">
-      New Group
-    </button>
+      <button
+        hx-post="/groups/edit"
+        hx-swap="beforebegin"
+        class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-10"
+      >
+        New Group
+      </button>
+    </div>
   </body>
 </html>
