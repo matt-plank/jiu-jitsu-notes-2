@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
+from fastapi.responses import PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -95,3 +96,19 @@ async def create_technique(
             "technique": db_technique,
         },
     )
+
+
+@router.delete("/{technique_id}")
+async def delete_technique(request: Request, technique_id: int, db: Session = Depends(get_db)):
+    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+
+    if technique is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique with id {technique_id!r}",
+        )
+
+    db.delete(technique)
+    db.commit()
+
+    return PlainTextResponse(content="")
