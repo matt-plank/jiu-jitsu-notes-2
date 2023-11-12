@@ -14,11 +14,23 @@
     value="{{ technique.name }}"
     class="border px-2 py-1.5 rounded-md"
   />
-
+  
   <input
     type="text"
     name="description"
     value="{{ technique.description }}"
     class="border px-2 py-1.5 rounded-md"
   />
+
+  <select
+    class="border bg-white px-2 py-1.5 rounded-md"
+    name="to_position_id"
+  >
+    {% for position in positions %}
+      <option
+        value="{{ position.id }}"
+        {% if position.id == technique.to_position_id %}selected{% endif %}
+      >{{ position.name }}</option>
+    {% endfor %}
+  </select>
 </form>

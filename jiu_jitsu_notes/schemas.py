@@ -24,3 +24,4 @@ class NewTechnique(BaseModel):
 class PartialTechnique(BaseModel):
     name: str | None = Field(None)
     description: str | None = Field(None)
+    to_position_id: int | None = Field(None)

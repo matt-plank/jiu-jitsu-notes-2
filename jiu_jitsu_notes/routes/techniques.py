@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from .. import schemas
 from ..db import get_db
-from ..models import Technique
+from ..models import Position, Technique
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -55,6 +55,9 @@ async def update_single_technique(
 
     if technique.description is not None:
         db_technique.description = technique.description
+
+    if technique.to_position_id is not None:
+        db_technique.to_position_id = technique.to_position_id
 
     db.commit()
 
@@ -113,16 +116,22 @@ async def get_editable_for_position(
         {
             "request": request,
             "technique": technique,
+            "positions": db.query(Position).all(),
         },
     )
 
 
 @router.post("/editable")
-async def create_editable(request: Request, fromPositionId: int):
+async def create_editable(
+    request: Request,
+    fromPositionId: int,
+    db: Session = Depends(get_db),
+):
     return templates.TemplateResponse(
         "components/technique/new.html",
         {
             "request": request,
             "from_position_id": fromPositionId,
+            "positions": db.query(Position).all(),
         },
     )

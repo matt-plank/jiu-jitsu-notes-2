@@ -3,6 +3,11 @@
   hx-swap="outerHTML"
   class="flex gap-2 items-center"
 >
+  <button
+    type="submit"
+    class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
+  >Save</button>
+
   <input
     type="text"
     name="name"
@@ -17,8 +22,15 @@
     class="border px-2 py-1.5 rounded-md"
   />
 
-  <button
-    type="submit"
-    class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
-  >Save</button>
+  <select
+    class="border bg-white px-2 py-1.5 rounded-md"
+    name="to_position_id"
+  >
+    <option value="">Select a position</option>
+    {% for position in positions %}
+      <option
+        value="{{ position.id }}"
+      >{{ position.name }}</option>
+    {% endfor %}
+  </select>
 </form>
