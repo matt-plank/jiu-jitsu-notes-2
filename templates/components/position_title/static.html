@@ -5,4 +5,10 @@
 >
   <h2 class="text-2xl font-semibold">{{ position.name }}</h2>
   <p class="text-gray-600">{{ position.description }}</p>
+
+  <div class="flex flex-col gap-3">
+    {% for technique in position.techniques %}
+      {% include 'components/technique/static.html' %}
+    {% endfor %}
+  </div>
 </div>

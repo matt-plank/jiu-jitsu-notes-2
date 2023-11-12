@@ -10,9 +10,23 @@
     </div>
     <p class="p-2 text-gray-600">{{group.description }}</p>
 
-    <div class="p-3 flex flex-col gap-2">
+    <div class="p-3 flex flex-col gap-10">
       {% for position in group.positions %}
-        {% include 'components/position_title/static.html' %}
+        <div class="flex flex-col gap-3">
+          {% include 'components/position_title/static.html' %}
+
+          {% for technique in position.techniques_from %}
+            {% include 'components/technique/static.html' %}
+          {% endfor %}
+
+          <button
+            hx-post="/techniques/editable?fromPositionId={{ position.id }}"
+            hx-swap="beforebegin"
+            class="w-48 border mt-5"
+          >
+            Add Technique
+          </button>
+        </div>
       {% endfor %}
     </div>
 

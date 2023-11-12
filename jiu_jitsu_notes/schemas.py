@@ -14,3 +14,13 @@ class PartialPosition(BaseModel):
 class NewGroup(BaseModel):
     name: str
     description: str
+
+
+class NewTechnique(BaseModel):
+    name: str
+    description: str
+
+
+class PartialTechnique(BaseModel):
+    name: str | None = Field(None)
+    description: str | None = Field(None)
