@@ -25,14 +25,18 @@ async def get_all_groups(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/{group_name}")
-async def get_group(request: Request, group_name: str, db: Session = Depends(get_db)):
-    group: PositionGroup | None = db.query(PositionGroup).filter_by(name=group_name).first()
+@router.get("/{group_id}")
+async def get_group(
+    request: Request,
+    group_id: int,
+    db: Session = Depends(get_db),
+):
+    group: PositionGroup | None = db.query(PositionGroup).filter_by(id=group_id).first()
 
     if group is None:
         raise HTTPException(
             status_code=404,
-            detail=f"No group called {group_name!r}",
+            detail=f"No group with id {group_id!r}",
         )
 
     return templates.TemplateResponse(
