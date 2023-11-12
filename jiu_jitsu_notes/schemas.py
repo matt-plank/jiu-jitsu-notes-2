@@ -19,6 +19,8 @@ class NewGroup(BaseModel):
 class NewTechnique(BaseModel):
     name: str
     description: str
+    from_position_id: int
+    to_position_id: int
 
 
 class PartialTechnique(BaseModel):

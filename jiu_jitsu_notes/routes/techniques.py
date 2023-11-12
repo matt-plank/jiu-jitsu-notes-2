@@ -74,16 +74,16 @@ async def update_single_technique(
 async def create_technique(
     request: Request,
     fromPositionId: int,
-    toPositionId: int,
     db: Session = Depends(get_db),
 ):
     form_data = await request.form()
-    technique = schemas.NewTechnique(**form_data)  # type: ignore
-    db_technique = Technique(
-        **technique.model_dump(),
+
+    technique = schemas.NewTechnique(
+        **form_data,  # type: ignore
         from_position_id=fromPositionId,
-        to_position_id=toPositionId,
     )
+
+    db_technique = Technique(**technique.model_dump())
 
     db.add(db_technique)
     db.commit()
