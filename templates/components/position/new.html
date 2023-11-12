@@ -2,9 +2,26 @@
   hx-post="/positions/?groupId={{ group_id }}"
   hx-swap="outerHTML"
   hx-trigger="submit"
+  class="p-3 flex gap-2 items-center overflow-x-auto"
 >
-  <input type="text" name="name" />
-  <input type="text" name="description" />
+  <button
+    type="submit"
+    class="bg-slate-700 px-2 py-1.5 rounded-md text-white"
+  >
+    Save
+  </button>
 
-  <button type="submit">Save</button>
+  <input
+    type="text"
+    name="name"
+    placeholder="Position Name"
+    class="border px-2 py-1.5 rounded-md !outline-none"
+  />
+
+  <input
+    type="text"
+    name="description"
+    placeholder="Position Description"
+    class="border px-2 py-1.5 rounded-md !outline-none"
+  />
 </form>
