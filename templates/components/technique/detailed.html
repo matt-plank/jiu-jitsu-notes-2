@@ -1,0 +1,25 @@
+<div class="technique mb-3">
+  <div class="flex justify-between pr-3">
+    <p
+      hx-get="/techniques/{{ technique.id }}"
+      hx-swap="outerHTML"
+      hx-trigger="click"
+      hx-target="closest .technique"
+      class="cursor-pointer"
+    >
+      {{ technique.name }}
+    </p>
+
+    <p
+      hx-get="/techniques/{{ technique.id }}/editable"
+      hx-swap="outerHTML"
+      hx-trigger="click"
+      hx-target="closest .technique"
+      class="cursor-pointer"
+    >
+      Edit
+    </p>
+  </div>
+
+  <p class="text-gray-600">{{ technique.description }}</p>
+</div>

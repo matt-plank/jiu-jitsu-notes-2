@@ -1,45 +1,47 @@
 <form
   hx-put="/techniques/{{ technique.id }}"
   hx-swap="outerHTML"
-  class="flex gap-2 items-center"
+  class="overflow-x-auto"
 >
-  <button
-    type="submit"
-    class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
-  >Save</button>
+  <div class="flex gap-2 items-center whitespace-nowrap">
+    <button
+      type="submit"
+      class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
+    >Save</button>
 
-  <input
-    type="text"
-    name="name"
-    value="{{ technique.name }}"
-    class="border px-2 py-1.5 rounded-md"
-  />
-  
-  <input
-    type="text"
-    name="description"
-    value="{{ technique.description }}"
-    class="border px-2 py-1.5 rounded-md"
-  />
+    <input
+      type="text"
+      name="name"
+      value="{{ technique.name }}"
+      class="border px-2 py-1.5 rounded-md"
+    />
+    
+    <input
+      type="text"
+      name="description"
+      value="{{ technique.description }}"
+      class="border px-2 py-1.5 rounded-md"
+    />
 
-  <select
-    class="border bg-white px-2 py-1.5 rounded-md"
-    name="to_position_id"
-  >
-    {% for position in positions %}
-      <option
-        value="{{ position.id }}"
-        {% if position.id == technique.to_position_id %}selected{% endif %}
-      >{{ position.name }}</option>
-    {% endfor %}
-  </select>
+    <select
+      class="border bg-white px-2 py-1.5 rounded-md"
+      name="to_position_id"
+    >
+      {% for position in positions %}
+        <option
+          value="{{ position.id }}"
+          {% if position.id == technique.to_position_id %}selected{% endif %}
+        >{{ position.name }}</option>
+      {% endfor %}
+    </select>
 
-  <button
-    hx-delete="/techniques/{{ technique.id }}"
-    hx-target="closest form"
-    hx-swap="outerHTML"
-    class="bg-red-700 text-white px-2 py-1.5 rounded-md"
-  >
-    Delete
-  </button>
+    <button
+      hx-delete="/techniques/{{ technique.id }}"
+      hx-target="closest form"
+      hx-swap="outerHTML"
+      class="bg-red-700 text-white px-2 py-1.5 rounded-md"
+    >
+      Delete
+    </button>
+  </div>
 </form>

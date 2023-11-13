@@ -1,9 +1,23 @@
 <div
-  hx-get="/techniques/{{ technique.id }}/editable"
-  hx-swap="outerHTML"
-  hx-trigger="click"
+  class="flex justify-between pr-3 technique"
 >
-  <ul class="list-disc list-inside">
-    <li>{{ technique.name }}</li>
-  </ul>
+  <p
+    hx-get="/techniques/{{ technique.id }}/detailed"
+    hx-swap="outerHTML"
+    hx-trigger="click"
+    hx-target="closest .technique"
+    class="cursor-pointer"
+  >
+    {{ technique.name }}
+  </p>
+
+  <p
+    hx-get="/techniques/{{ technique.id }}/editable"
+    hx-swap="outerHTML"
+    hx-trigger="click"
+    hx-target="closest .technique"
+    class="cursor-pointer"
+  >
+    Edit
+  </p>
 </div>

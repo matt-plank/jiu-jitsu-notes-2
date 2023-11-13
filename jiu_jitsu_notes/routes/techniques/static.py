@@ -35,6 +35,29 @@ async def get_single_technique(
     )
 
 
+@router.get("/{technique_id}/detailed")
+async def get_detailed_technique(
+    request: Request,
+    technique_id: int,
+    db: Session = Depends(get_db),
+):
+    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+
+    if technique is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique found with id {technique_id!r}",
+        )
+
+    return templates.TemplateResponse(
+        "components/technique/detailed.html",
+        {
+            "request": request,
+            "technique": technique,
+        },
+    )
+
+
 @router.put("/{technique_id}")
 async def update_single_technique(
     request: Request,
