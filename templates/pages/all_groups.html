@@ -9,26 +9,31 @@
       <h1 class="text-white text-2xl">Jiu Jitsu Notes</h1>
     </div>
 
-    <div class="p-3 flex flex-col gap-10">
-      {% for group in groups %}
-        <div class="flex flex-col gap-3">
-          {% include "components/group/static.html" %}
+    <div class="flex justify-center pt-5">
+      <div class="p-3 flex flex-col gap-10 w-full max-w-lg">
+        <h2 class="text-3xl font-semibold">All Groups</h2>
+        <hr>
 
-          <div class="flex flex-col gap-2">
-            {% for position in group.positions %}
-              {% include 'components/position/static.html' %}
-            {% endfor %}
+        {% for group in groups %}
+          <div class="flex flex-col gap-3">
+            {% include "components/group/static.html" %}
+
+            <div class="flex flex-col gap-1">
+              {% for position in group.positions %}
+                {% include 'components/position/static.html' %}
+              {% endfor %}
+            </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
 
-      <button
-        hx-post="/groups/edit"
-        hx-swap="beforebegin"
-        class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-10"
-      >
-        New Group
-      </button>
+        <button
+          hx-post="/groups/edit"
+          hx-swap="beforebegin"
+          class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-10"
+        >
+          New Group
+        </button>
+      </div>
     </div>
   </body>
 </html>
