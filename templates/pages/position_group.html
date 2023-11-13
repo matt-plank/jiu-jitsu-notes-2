@@ -8,36 +8,42 @@
     <div class="w-full p-3 bg-slate-700">
       <h1 class="text-white text-2xl">{{ group.name }}</h1>
     </div>
-    <p class="p-2 text-gray-600">{{group.description }}</p>
+    
+    <div class="flex justify-center">  
+      <div class="pt-1 p-3 flex flex-col gap-10 w-full max-w-lg">
+        <p class="text-gray-600 pt-2">{{group.description }}</p>
 
-    <div class="p-3 flex flex-col gap-10">
-      {% for position in group.positions %}
+        {% for position in group.positions %}
         <div class="flex flex-col gap-3">
           {% include 'components/position_title/static.html' %}
-
+          
           <div class="flex flex-col gap-1">
             {% for technique in position.techniques_from %}
-              {% include 'components/technique/static.html' %}
+            {% include 'components/technique/static.html' %}
             {% endfor %}
           </div>
-
+          
           <button
             hx-post="/techniques/editable?fromPositionId={{ position.id }}"
             hx-swap="beforebegin"
             class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-3"
-          >
+            >
             Add Technique
           </button>
         </div>
-      {% endfor %}
+        <hr>
+        {% endfor %}
+
+        <button
+          hx-post="/positions/edit?groupId={{ group.id }}"
+          hx-swap="beforebegin"
+          class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32"
+        >
+          New Position
+        </button>
+      </div>
     </div>
 
-    <button
-      hx-post="/positions/edit?groupId={{ group.id }}"
-      hx-swap="beforebegin"
-      class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 m-3 mt-10"
-    >
-      New Position
-    </button>
+    
   </body>
 </html>
