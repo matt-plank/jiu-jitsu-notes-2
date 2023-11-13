@@ -6,12 +6,15 @@
   </head>
   <body>
     <div class="w-full p-3 bg-slate-700">
-      <h1 class="text-white text-2xl">{{ group.name }}</h1>
+      <h1 class="text-white text-2xl">Jiu Jitsu Notes</h1>
     </div>
     
     <div class="flex justify-center">  
-      <div class="pt-1 p-3 flex flex-col gap-10 w-full max-w-lg">
-        <p class="text-gray-600 pt-2">{{group.description }}</p>
+      <div class="pt-5 p-3 flex flex-col gap-10 w-full max-w-lg">
+        <div>
+          <h2 class="text-3xl font-semibold">{{ group.name }}</h2>
+          <p class="text-gray-600 pt-2">{{group.description }}</p>
+        </div>
 
         {% for position in group.positions %}
         <div class="flex flex-col gap-3">
