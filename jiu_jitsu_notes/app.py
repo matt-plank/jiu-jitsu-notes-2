@@ -5,12 +5,13 @@ from fastapi.templating import Jinja2Templates
 from . import tailwind
 from .db import engine
 from .models import Base
-from .routes import groups, positions, techniques
+from .routes import groups, index, positions, techniques
 
 Base.metadata.create_all(bind=engine)
 tailwind.build_css()
 
 app = FastAPI()
+app.include_router(index.router)
 app.include_router(groups.router, prefix="/groups")
 app.include_router(positions.router, prefix="/positions")
 app.include_router(techniques.router, prefix="/techniques")
