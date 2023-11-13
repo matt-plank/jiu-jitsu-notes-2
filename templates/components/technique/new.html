@@ -1,36 +1,38 @@
 <form
   hx-post="/techniques/?fromPositionId={{ from_position_id }}"
   hx-swap="outerHTML"
-  class="flex gap-2 items-center"
+  class="overflow-x-auto"
 >
-  <button
-    type="submit"
-    class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
-  >Save</button>
+  <div class="flex gap-2 items-center whitespace-nowrap">
+    <button
+      type="submit"
+      class="bg-slate-700 text-white px-2 py-1.5 rounded-md"
+    >Save</button>
 
-  <input
-    type="text"
-    name="name"
-    placeholder="Technique Name"
-    class="border px-2 py-1.5 rounded-md"
-  />
+    <input
+      type="text"
+      name="name"
+      placeholder="Technique Name"
+      class="border px-2 py-1.5 rounded-md"
+    />
 
-  <input
-    type="text"
-    name="description"
-    placeholder="Technique Description"
-    class="border px-2 py-1.5 rounded-md"
-  />
+    <input
+      type="text"
+      name="description"
+      placeholder="Technique Description"
+      class="border px-2 py-1.5 rounded-md"
+    />
 
-  <select
-    class="border bg-white px-2 py-1.5 rounded-md"
-    name="to_position_id"
-  >
-    <option value="">Select a position</option>
-    {% for position in positions %}
-      <option
-        value="{{ position.id }}"
-      >{{ position.name }}</option>
-    {% endfor %}
-  </select>
+    <select
+      class="border bg-white px-2 py-1.5 rounded-md"
+      name="to_position_id"
+    >
+      <option value="">Select a position</option>
+      {% for position in positions %}
+        <option
+          value="{{ position.id }}"
+        >{{ position.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 </form>
