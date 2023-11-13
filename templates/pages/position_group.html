@@ -9,6 +9,14 @@
     
     <div class="flex justify-center">  
       <div class="pt-5 p-3 flex flex-col gap-10 w-full max-w-lg">
+        <div class="flex gap-1 text-gray-600">
+          <a href="/" class="hover:underline">Home</a>
+          <p>></p>
+          <a href="/groups/" class="hover:underline">Groups</a>
+          <p>></p>
+          <a href="/group/{{ group.id }}" class="hover:underline">{{ group.name }}</a>
+        </div>
+
         <div>
           <h2 class="text-3xl font-semibold">{{ group.name }}</h2>
           <p class="text-gray-600 pt-2">{{group.description }}</p>
