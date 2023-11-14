@@ -1,5 +1,22 @@
-<form hx-post="/groups/" hx-swap="outerHTML">
-  <input type="text" name="name"/>
-  <input type="text" name="description" />
-  <button type="submit">Save</button>
+<form hx-post="/groups/" hx-swap="outerHTML" class="flex flex-col gap-3">
+  <input
+    type="text"
+    name="name"
+    placeholder="Group Name"
+    class="px-2 py-1.5 border rounded-md text-2xl"
+  />
+  
+  <input
+    type="text"
+    name="description"
+    placeholder="Group Description"
+    class="px-2 py-1.5 border rounded-md"
+  />
+
+  <button
+    type="submit"
+    class="bg-slate-700 px-2 py-1.5 text-white"
+  >
+    Add Group
+  </button>
 </form>
