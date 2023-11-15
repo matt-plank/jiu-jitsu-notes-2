@@ -1,14 +1,21 @@
 <form
-  hx-put="/positions/{{ position.id }}?format={{ format }}"
+  hx-put="/positions/{{ position.id }}"
   hx-swap="outerHTML"
   hx-trigger="submit"
-  class="flex gap-3 overflow-x-auto m-0 items-center text-2xl"
+  class="flex flex-col gap-3 overflow-x-auto m-0"
 >
   <input
     type="text"
     name="name"
     value="{{ position.name }}"
-    class="border px-2 p-1 rounded-md min-w-[13rem] whitespace-nowrap !outline-none"
+    class="border px-2 py-1.5 rounded-md !outline-none text-2xl"
+  />
+
+  <input
+    type="text"
+    name="description"
+    value="{{ position.description }}"
+    class="border px-2 py-1.5 rounded-md !outline-none"
   />
 
   <button

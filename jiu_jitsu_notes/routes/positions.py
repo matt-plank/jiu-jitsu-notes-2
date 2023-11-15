@@ -18,7 +18,6 @@ templates = Jinja2Templates(directory="templates")
 async def get_position(
     request: Request,
     position_id: int,
-    format: Literal["default", "title"] = "default",
     db: Session = Depends(get_db),
 ):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
@@ -29,17 +28,11 @@ async def get_position(
             detail=f"No position with id {position_id!r}",
         )
 
-    TEMPLATES: dict[str, str] = {
-        "default": "components/position/static.html",
-        "title": "components/position_title/static.html",
-    }
-
     return templates.TemplateResponse(
-        TEMPLATES[format],
+        "components/position_title/static.html",
         {
             "request": request,
             "position": position,
-            "format": format,
         },
     )
 
@@ -48,7 +41,6 @@ async def get_position(
 async def update_position(
     request: Request,
     position_id: int,
-    format: Literal["default", "title"] = "default",
     db: Session = Depends(get_db),
 ):
     db_position: Position | None = db.query(Position).filter_by(id=position_id).first()
@@ -70,17 +62,11 @@ async def update_position(
 
     db.commit()
 
-    TEMPLATES: dict[str, str] = {
-        "default": "components/position/static.html",
-        "title": "components/position_title/static.html",
-    }
-
     return templates.TemplateResponse(
-        TEMPLATES[format],
+        "components/position_title/static.html",
         {
             "request": request,
             "position": db_position,
-            "format": format,
         },
     )
 
@@ -88,7 +74,6 @@ async def update_position(
 @router.post("/")
 async def create_position(
     request: Request,
-    format: Literal["default", "title"] = "default",
     db: Session = Depends(get_db),
 ):
     form_data = await request.form()
@@ -104,26 +89,19 @@ async def create_position(
     db.add(db_position)
     db.commit()
 
-    TEMPLATES: dict[str, str] = {
-        "default": "components/position/static.html",
-        "title": "components/position_title/static.html",
-    }
-
     return templates.TemplateResponse(
-        TEMPLATES[format],
+        "components/position_title/static.html",
         {
             "request": request,
             "position": position,
-            "format": format,
         },
     )
 
 
-@router.get("/{position_id}/edit")
+@router.get("/{position_id}/editable")
 async def get_editable(
     request: Request,
     position_id: int,
-    format: Literal["default", "title"] = "default",
     db: Session = Depends(get_db),
 ):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
@@ -134,30 +112,19 @@ async def get_editable(
             detail=f"No position with id {position_id!r}",
         )
 
-    TEMPLATES: dict[str, str] = {
-        "default": "components/position/editable.html",
-        "title": "components/position_title/editable.html",
-    }
-
     return templates.TemplateResponse(
-        TEMPLATES[format],
+        "components/position_title/editable.html",
         {
             "request": request,
             "position": position,
-            "format": format,
         },
     )
 
 
-@router.post("/edit")
-async def new_editable(request: Request, format: Literal["default", "title"] = "default"):
-    TEMPLATES: dict[str, str] = {
-        "default": "components/position/new.html",
-        "title": "components/position_title/new.html",
-    }
-
+@router.post("/editable")
+async def new_editable(request: Request):
     return templates.TemplateResponse(
-        TEMPLATES[format],
+        "components/position_title/new.html",
         {
             "request": request,
             "group_id": request.query_params.get("groupId"),
