@@ -128,6 +128,5 @@ async def new_editable(request: Request):
         {
             "request": request,
             "group_id": request.query_params.get("groupId"),
-            "format": format,
         },
     )

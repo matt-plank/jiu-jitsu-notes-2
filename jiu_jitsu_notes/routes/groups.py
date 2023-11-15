@@ -44,7 +44,6 @@ async def get_group(
         {
             "request": request,
             "group": group,
-            "format": "title",
         },
     )
 
