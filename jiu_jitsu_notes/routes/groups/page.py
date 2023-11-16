@@ -39,7 +39,7 @@ async def get_group(
         )
 
     return templates.TemplateResponse(
-        "pages/position_group.html",
+        "pages/group.html",
         {
             "request": request,
             "group": group,
