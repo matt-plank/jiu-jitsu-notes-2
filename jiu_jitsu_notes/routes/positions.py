@@ -29,7 +29,7 @@ async def get_position(
         )
 
     return templates.TemplateResponse(
-        "components/position_title/static.html",
+        "components/position/static.html",
         {
             "request": request,
             "position": position,
@@ -63,7 +63,7 @@ async def update_position(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/position_title/static.html",
+        "components/position/static.html",
         {
             "request": request,
             "position": db_position,
@@ -90,7 +90,7 @@ async def create_position(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/position_title/static.html",
+        "components/position/static.html",
         {
             "request": request,
             "position": position,
@@ -113,7 +113,7 @@ async def get_editable(
         )
 
     return templates.TemplateResponse(
-        "components/position_title/editable.html",
+        "components/position/editable.html",
         {
             "request": request,
             "position": position,
@@ -124,7 +124,7 @@ async def get_editable(
 @router.post("/editable")
 async def new_editable(request: Request):
     return templates.TemplateResponse(
-        "components/position_title/new.html",
+        "components/position/new.html",
         {
             "request": request,
             "group_id": request.query_params.get("groupId"),
