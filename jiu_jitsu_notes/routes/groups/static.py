@@ -12,6 +12,29 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
+@router.post("/list")
+async def create_filtered_list_list(request: Request, db: Session = Depends(get_db)):
+    form_data = await request.form()
+
+    group_query = db.query(PositionGroup)
+
+    if "search" in form_data:
+        search_query: str = form_data["search"]  # type: ignore
+        group_query = group_query.filter(
+            PositionGroup.name.contains(search_query),
+        )
+
+    groups = group_query.all()
+
+    return templates.TemplateResponse(
+        "components/group/list.html",
+        {
+            "request": request,
+            "groups": groups,
+        },
+    )
+
+
 @router.post("/")
 async def create_group(request: Request, db: Session = Depends(get_db)):
     form_data = await request.form()

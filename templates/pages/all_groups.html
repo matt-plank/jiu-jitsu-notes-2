@@ -17,6 +17,27 @@
         
         <h2 class="text-4xl font-semibold">Groups</h2>
 
+        <form
+          hx-post="/groups/list"
+          hx-target="#groups"
+          hx-swap="innerHTML"
+          class="flex gap-2"
+        >
+          <input
+            type="text"
+            name="search"
+            placeholder="Search"
+            class="border px-2 py-1.5 rounded-md w-full"
+          />
+
+          <button
+            type="submit"
+            class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32"
+          >
+            Search
+          </button>
+        </form>
+
         <div id="groups" class="flex flex-col gap-10">
           {% include "components/group/list.html" %}
         </div>
