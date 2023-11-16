@@ -1,8 +1,16 @@
-<div>
-  <h2 class="text-2xl font-semibold">
-    <a href="/groups/{{ group.id }}" class="hover:underline">
-      {{ group.name }}
-    </a>
-  </h2>
-  <p class="text-gray-600">{{ group.description }}</p>
+<div class="flex flex-col gap-3">
+  <div>
+    <h2 class="text-2xl font-semibold">
+      <a href="/groups/{{ group.id }}" class="hover:underline">
+        {{ group.name }}
+      </a>
+    </h2>
+    <p class="text-gray-600">{{ group.description }}</p>
+  </div>  
+
+  <div class="flex flex-col gap-1">
+    {% for position in group.positions %}
+      {% include 'components/position_list_item/static.html' %}
+    {% endfor %}
+  </div>
 </div>
