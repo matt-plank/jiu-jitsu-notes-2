@@ -1,10 +1,6 @@
-<div
-  hx-get="/positions/{{ position.id }}/edit"
-  hx-swap="outerHTML"
-  hx-trgger="click"
-  class="flex gap-3 overflow-x-auto overflow-y-visible relative"
+<a
+  href="/groups/{{ group.id }}#{{ position.name.lower().replace(' ', '-') }}"
+  class="hover:text-gray-600"
 >
-  <ul class="list-disc list-inside">
-    <li>{{ position.name }}</li>
-  </ul>
-</div>
+  {{ position.name }}
+</a>
