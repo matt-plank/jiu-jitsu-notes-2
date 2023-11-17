@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class NewPosition(BaseModel):
@@ -20,10 +20,24 @@ class NewTechnique(BaseModel):
     name: str
     description: str
     from_position_id: int
-    to_position_id: int
+    to_position_id: int | None = Field(None)
+
+    @validator("to_position_id", pre=True)
+    def empty_string_to_none(cls, id):
+        if id == "":
+            return None
+
+        return id
 
 
 class PartialTechnique(BaseModel):
     name: str | None = Field(None)
     description: str | None = Field(None)
     to_position_id: int | None = Field(None)
+
+    @validator("to_position_id", pre=True)
+    def empty_string_to_none(cls, id):
+        if id == "":
+            return None
+
+        return id
