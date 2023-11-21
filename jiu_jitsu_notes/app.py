@@ -12,7 +12,7 @@ app = FastAPI()
 app.include_router(index.router)
 app.include_router(groups.router, prefix="/groups")
 app.include_router(positions.router, prefix="/positions")
-app.include_router(techniques.router, prefix="/techniques")
+app.include_router(techniques.router, prefix="/positions")
 
 app.mount("/css", StaticFiles(directory="templates/css"), name="static")
 

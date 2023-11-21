@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -12,9 +12,10 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/{technique_id}")
+@router.get("/{from_position_id}/techniques/{technique_id}")
 async def get_single_technique(
     request: Request,
+    from_position_id: int,
     technique_id: int,
     db: Session = Depends(get_db),
 ):
@@ -24,6 +25,12 @@ async def get_single_technique(
         raise HTTPException(
             status_code=404,
             detail=f"No technique found with id {technique_id!r}",
+        )
+
+    if technique.from_position_id != from_position_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique with id {technique_id!r} belongs to this position",
         )
 
     return templates.TemplateResponse(
@@ -35,9 +42,10 @@ async def get_single_technique(
     )
 
 
-@router.get("/{technique_id}/detailed")
+@router.get("/{from_position_id}/techniques/{technique_id}/detailed")
 async def get_detailed_technique(
     request: Request,
+    from_position_id: int,
     technique_id: int,
     db: Session = Depends(get_db),
 ):
@@ -49,6 +57,12 @@ async def get_detailed_technique(
             detail=f"No technique found with id {technique_id!r}",
         )
 
+    if technique.from_position_id != from_position_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique with id {technique_id!r} belongs to this position",
+        )
+
     return templates.TemplateResponse(
         "components/technique/detailed.html",
         {
@@ -58,14 +72,13 @@ async def get_detailed_technique(
     )
 
 
-@router.put("/{technique_id}")
+@router.put("/{from_position_id}/techniques/{technique_id}")
 async def update_single_technique(
     request: Request,
+    from_position_id: int,
     technique_id: int,
     db: Session = Depends(get_db),
 ):
-    form_data = await request.form()
-    technique = schemas.PartialTechnique(**form_data)  # type: ignore
     db_technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 
     if db_technique is None:
@@ -73,6 +86,15 @@ async def update_single_technique(
             status_code=404,
             detail=f"No technique found with id {technique_id!r}",
         )
+
+    if db_technique.from_position_id != from_position_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique with id {technique_id!r} belongs to this position",
+        )
+
+    form_data = await request.form()
+    technique = schemas.PartialTechnique(**form_data)  # type: ignore
 
     if technique.name is not None:
         db_technique.name = technique.name
@@ -94,17 +116,17 @@ async def update_single_technique(
     )
 
 
-@router.post("/")
+@router.post("/{from_position_id}/techniques/")
 async def create_technique(
     request: Request,
-    fromPositionId: int,
+    from_position_id: int,
     db: Session = Depends(get_db),
 ):
     form_data = await request.form()
 
     technique = schemas.NewTechnique(
         **form_data,  # type: ignore
-        from_position_id=fromPositionId,
+        from_position_id=from_position_id,
     )
 
     db_technique = Technique(**technique.model_dump())
@@ -121,8 +143,12 @@ async def create_technique(
     )
 
 
-@router.delete("/{technique_id}")
-async def delete_technique(request: Request, technique_id: int, db: Session = Depends(get_db)):
+@router.delete("/{from_position_id}/techniques/{technique_id}")
+async def delete_technique(
+    from_position_id: int,
+    technique_id: int,
+    db: Session = Depends(get_db),
+):
     technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 
     if technique is None:
@@ -131,7 +157,13 @@ async def delete_technique(request: Request, technique_id: int, db: Session = De
             detail=f"No technique with id {technique_id!r}",
         )
 
+    if technique.from_position_id != from_position_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No technique with id {technique_id!r} belongs to this position",
+        )
+
     db.delete(technique)
     db.commit()
 
-    return PlainTextResponse(content="")
+    return Response()

@@ -1,6 +1,6 @@
 <div class="flex justify-between pr-3 technique">
   <p
-    hx-get="/techniques/{{ technique.id }}/detailed"
+    hx-get="/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}/detailed"
     hx-swap="outerHTML"
     hx-trigger="click"
     hx-target="closest .technique"
@@ -10,7 +10,7 @@
   </p>
 
   <p
-    hx-get="/techniques/{{ technique.id }}/editable"
+    hx-get="/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}/editable"
     hx-swap="outerHTML"
     hx-trigger="click"
     hx-target="closest .technique"

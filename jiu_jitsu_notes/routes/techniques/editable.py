@@ -10,9 +10,10 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/{technique_id}/editable")
+@router.get("/{from_position_id}/techniques/{technique_id}/editable")
 async def get_editable_for_position(
     request: Request,
+    from_position_id: int,
     technique_id: int,
     db: Session = Depends(get_db),
 ):
@@ -22,6 +23,12 @@ async def get_editable_for_position(
         raise HTTPException(
             status_code=404,
             detail=f"No technique found with id {technique_id!r}",
+        )
+
+    if technique.from_position_id != from_position_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"The technique with id {technique_id!r} does not belong to this position",
         )
 
     return templates.TemplateResponse(
@@ -34,17 +41,17 @@ async def get_editable_for_position(
     )
 
 
-@router.post("/editable")
+@router.post("/{from_position_id}/techniques/editable")
 async def create_editable(
     request: Request,
-    fromPositionId: int,
+    from_position_id: int,
     db: Session = Depends(get_db),
 ):
     return templates.TemplateResponse(
         "components/technique/new.html",
         {
             "request": request,
-            "from_position_id": fromPositionId,
+            "from_position_id": from_position_id,
             "positions": db.query(Position).all(),
         },
     )

@@ -21,7 +21,7 @@
     </div>
     
     <button
-      hx-post="/techniques/editable?fromPositionId={{ position.id }}"
+      hx-post="/positions/{{ position.id}}/techniques/editable"
       hx-swap="beforeend"
       hx-target="#{{ position_id }}-technique-list"
       class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-3"
