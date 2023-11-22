@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import Depends
 from fastapi.requests import Request
 from fastapi.routing import APIRouter
@@ -13,7 +15,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.post("/list")
-async def create_filtered_list_list(request: Request, db: Session = Depends(get_db)):
+async def create_filtered_list_list(request: Request, db: Annotated[Session, Depends(get_db)]):
     form_data = await request.form()
 
     group_query = db.query(PositionGroup)
@@ -36,7 +38,7 @@ async def create_filtered_list_list(request: Request, db: Session = Depends(get_
 
 
 @router.post("/")
-async def create_group(request: Request, db: Session = Depends(get_db)):
+async def create_group(request: Request, db: Annotated[Session, Depends(get_db)]):
     form_data = await request.form()
     group = schemas.NewGroup(**form_data)  # type: ignore
     db_group = PositionGroup(**group.model_dump())

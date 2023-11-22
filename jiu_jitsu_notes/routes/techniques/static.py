@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
 from fastapi.responses import Response
@@ -17,7 +19,7 @@ async def get_single_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 
@@ -47,7 +49,7 @@ async def get_detailed_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 
@@ -77,7 +79,7 @@ async def update_single_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     db_technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 
@@ -120,7 +122,7 @@ async def update_single_technique(
 async def create_technique(
     request: Request,
     from_position_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     form_data = await request.form()
 
@@ -147,7 +149,7 @@ async def create_technique(
 async def delete_technique(
     from_position_id: int,
     technique_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
 

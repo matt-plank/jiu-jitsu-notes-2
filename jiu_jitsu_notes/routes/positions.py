@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from fastapi.requests import Request
@@ -18,7 +18,7 @@ templates = Jinja2Templates(directory="templates")
 async def get_position(
     request: Request,
     position_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
 
@@ -41,7 +41,7 @@ async def get_position(
 async def update_position(
     request: Request,
     position_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     db_position: Position | None = db.query(Position).filter_by(id=position_id).first()
 
@@ -74,7 +74,7 @@ async def update_position(
 @router.post("/")
 async def create_position(
     request: Request,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     form_data = await request.form()
     position = NewPosition(**form_data)  # type: ignore
@@ -102,7 +102,7 @@ async def create_position(
 async def get_editable(
     request: Request,
     position_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
 

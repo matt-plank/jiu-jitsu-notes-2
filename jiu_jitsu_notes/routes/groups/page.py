@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
 from fastapi.routing import APIRouter
@@ -12,7 +14,10 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")
-async def groups_page(request: Request, db: Session = Depends(get_db)):
+async def groups_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+):
     groups = db.query(PositionGroup).all()
 
     return templates.TemplateResponse(
@@ -28,7 +33,7 @@ async def groups_page(request: Request, db: Session = Depends(get_db)):
 async def get_group(
     request: Request,
     group_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     group: PositionGroup | None = db.query(PositionGroup).filter_by(id=group_id).first()
 

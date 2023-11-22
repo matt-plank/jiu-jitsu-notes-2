@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import Depends, HTTPException
 from fastapi.requests import Request
 from fastapi.routing import APIRouter
@@ -15,7 +17,7 @@ templates = Jinja2Templates(directory="templates")
 async def get_editable(
     request: Request,
     position_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     position: Position | None = db.query(Position).filter_by(id=position_id).first()
 
