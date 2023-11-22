@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Jiu Jitsu Notes - Groups</title>
+
+    {% include 'components/head.html' %}
+  </head>
+  <body>
+    {% include "components/navbar.html" %}
+
+    <div class="flex justify-center mt-48">
+      <form class="w-full max-w-sm p-5">
+        <h1 class="text-5xl font-black text-center">Log In</h1>
+
+        <div class="mt-16 flex flex-col gap-5">
+          <input
+            type="text"
+            placeholder="Email"
+            class="px-2 py-1.5 border rounded-md !outline-none"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            class="px-2 py-1.5 border rounded-md !outline-none"
+          />
+
+          <button
+            type="submit"
+            class="px-2 py-1.5 bg-slate-700 text-white rounded-md"
+          >
+            Log In
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
