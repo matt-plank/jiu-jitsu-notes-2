@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from fastapi.requests import Request
+from fastapi.responses import Response
 from fastapi.routing import APIRouter
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -96,6 +97,25 @@ async def create_position(
             "position": position,
         },
     )
+
+
+@router.delete("/{position_id}")
+async def delete_position(
+    position_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
+    db_position: Position | None = db.query(Position).filter_by(id=position_id).first()
+
+    if db_position is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No position with id {position_id!r}",
+        )
+
+    db.delete(db_position)
+    db.commit()
+
+    return Response()
 
 
 @router.post("/list")

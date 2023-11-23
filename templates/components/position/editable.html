@@ -19,12 +19,23 @@
       class="border px-2 py-1.5 rounded-md !outline-none"
     />
 
-    <button
-      type="submit"
-      class="px-2 p-1 rounded-md bg-slate-700 text-white"
-    >
-      Save
-    </button>
+    <div class="flex gap-3">
+      <button
+        type="submit"
+        class="px-2 p-1 rounded-md bg-slate-700 text-white w-full"
+      >
+        Save
+      </button>
+
+      <button
+        type="submit"
+        class="px-2 p-1 rounded-md bg-red-700 text-white w-full"
+        hx-delete="/positions/{{ position.id }}"
+        hx-target="closest form"
+      >
+        Delete
+      </button>
+    </div>
   </div>
   <hr>
 </form>
