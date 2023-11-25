@@ -1,11 +1,10 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from .. import schemas
 from ..db import get_db
 from ..models import PositionGroup
 
@@ -77,6 +76,8 @@ async def get_group(
 async def create_group(
     request: Request,
     component: Literal["list-item"],
+    name: Annotated[str, Form()],
+    description: Annotated[str, Form()],
     db: Annotated[Session, Depends(get_db)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
@@ -85,9 +86,10 @@ async def create_group(
             detail="Invalid component",
         )
 
-    form_data = await request.form()
-    group = schemas.NewGroup(**form_data)  # type: ignore
-    db_group = PositionGroup(**group.model_dump())
+    db_group = PositionGroup(
+        name=name,
+        description=description,
+    )
 
     db.add(db_group)
     db.commit()
@@ -105,11 +107,11 @@ async def create_group(
 async def update_group(
     request: Request,
     group_id: int,
+    name: Annotated[Optional[str], Form()],
+    description: Annotated[Optional[str], Form()],
     component: Literal["header"],
     db: Annotated[Session, Depends(get_db)],
 ):
-    form_data = await request.form()
-    group = schemas.PartialGroup(**form_data)  # type: ignore
     db_group: PositionGroup | None = db.query(PositionGroup).get(group_id)
 
     if db_group is None:
@@ -118,11 +120,11 @@ async def update_group(
             detail="Group not found",
         )
 
-    if group.name is not None:
-        db_group.name = group.name
+    if name is not None:
+        db_group.name = name
 
-    if group.description is not None:
-        db_group.description = group.description
+    if description is not None:
+        db_group.description = description
 
     db.commit()
 
