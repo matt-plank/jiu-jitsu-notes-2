@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -9,10 +9,14 @@ from .routes import groups, index, login, positions, register, techniques
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+api = APIRouter()
+api.include_router(groups.router, prefix="/groups")
+api.include_router(positions.router, prefix="/positions")
+api.include_router(techniques.router, prefix="/positions")
+
 app.include_router(index.router)
-app.include_router(groups.router, prefix="/groups")
-app.include_router(positions.router, prefix="/positions")
-app.include_router(techniques.router, prefix="/positions")
+app.include_router(api, prefix="/api")
 app.include_router(login.router, prefix="/login")
 app.include_router(register.router, prefix="/register")
 

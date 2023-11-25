@@ -1,4 +1,8 @@
-<form hx-post="/groups/" hx-swap="outerHTML" class="flex flex-col gap-3">
+<form
+  hx-post="/api/groups/?component=list-item"
+  hx-swap="outerHTML"
+  class="flex flex-col gap-3"
+>
   <input
     type="text"
     name="name"
