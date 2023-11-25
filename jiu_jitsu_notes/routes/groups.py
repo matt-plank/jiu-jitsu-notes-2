@@ -12,9 +12,9 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 COMPONENT_TO_TEMPLATE: dict[str, str] = {
-    "list-item": "components/group/list_item/static.html",
+    "list-item": "components/group/list_item/readonly.html",
     "list-item-new": "components/group/list_item/new.html",
-    "header": "components/group/header/static.html",
+    "header": "components/group/header/readonly.html",
     "header-editable": "components/group/header/editable.html",
 }
 
@@ -95,7 +95,7 @@ async def create_group(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/group/list_item/static.html",
+        "components/group/list_item/readonly.html",
         {
             "request": request,
             "group": db_group,

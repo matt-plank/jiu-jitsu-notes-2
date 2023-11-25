@@ -36,7 +36,7 @@ async def get_single_technique(
         )
 
     return templates.TemplateResponse(
-        "components/technique/static.html",
+        "components/technique/readonly.html",
         {
             "request": request,
             "technique": technique,
@@ -110,7 +110,7 @@ async def update_single_technique(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/technique/static.html",
+        "components/technique/readonly.html",
         {
             "request": request,
             "technique": db_technique,
@@ -137,7 +137,7 @@ async def create_technique(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/technique/static.html",
+        "components/technique/readonly.html",
         {
             "request": request,
             "technique": db_technique,

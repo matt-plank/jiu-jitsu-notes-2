@@ -29,7 +29,7 @@ async def get_position(
         )
 
     return templates.TemplateResponse(
-        "components/position/static.html",
+        "components/position/readonly.html",
         {
             "request": request,
             "position": position,
@@ -63,7 +63,7 @@ async def update_position(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/position/static.html",
+        "components/position/readonly.html",
         {
             "request": request,
             "position": db_position,
@@ -90,7 +90,7 @@ async def create_position(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/position/static.html",
+        "components/position/readonly.html",
         {
             "request": request,
             "position": position,
