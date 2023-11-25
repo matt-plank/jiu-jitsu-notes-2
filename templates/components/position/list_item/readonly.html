@@ -5,7 +5,7 @@
 >
   <div class="flex flex-col gap-3">
     <div
-      hx-get="/api/positions/{{ position.id }}/editable"
+      hx-get="/api/groups/{{ group.id }}/positions/{{ position.id }}?component=list-item-editable"
       hx-target="#{{ position.name.lower().replace(' ', '-') }}"
       hx-swap="outerHTML"
       hx-trgger="click"

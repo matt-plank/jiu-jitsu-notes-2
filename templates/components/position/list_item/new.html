@@ -1,5 +1,5 @@
 <form
-  hx-post="/api/positions/?groupId={{ group_id }}"
+  hx-post="/api/groups/{{ group.id }}/positions/?component=list-item"
   hx-swap="outerHTML"
   hx-trigger="submit"
   class="flex flex-col gap-3 overflow-x-auto m-0"

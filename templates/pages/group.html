@@ -42,11 +42,11 @@
 
         {% set positions = group.positions %}
         <div id="positions" class="flex flex-col gap-10">
-          {% include "components/position/list.html" %}
+          {% include "components/position/list_item/list.html" %}
         </div>
 
         <button
-          hx-post="/api/positions/editable?groupId={{ group.id }}"
+          hx-get="/api/groups/{{ group.id }}/positions?component=list-item-new"
           hx-target="#positions"
           hx-swap="beforeend"
           class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32"
