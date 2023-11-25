@@ -13,15 +13,17 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 COMPONENT_TO_TEMPLATE: dict[str, str] = {
-    "list-item": "components/group/static.html",
-    "list-item-new": "components/group/new.html",
+    "list-item": "components/group/list_item/static.html",
+    "list-item-new": "components/group/list_item/new.html",
+    "header": "components/group/header/static.html",
+    "header-editable": "components/group/header/editable.html",
 }
 
 
 @router.get("/")
 async def get_groups(
     request: Request,
-    component: Literal["list-item", "list-item-new"],
+    component: Literal["list-item-new"],
     db: Annotated[Session, Depends(get_db)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
@@ -45,7 +47,7 @@ async def get_groups(
 async def get_group(
     request: Request,
     group_id: int,
-    component: Literal["list-item"],
+    component: Literal["list-item", "header-editable"],
     db: Annotated[Session, Depends(get_db)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
@@ -91,7 +93,41 @@ async def create_group(
     db.commit()
 
     return templates.TemplateResponse(
-        "components/group/static.html",
+        "components/group/list_item/static.html",
+        {
+            "request": request,
+            "group": db_group,
+        },
+    )
+
+
+@router.put("/{group_id}")
+async def update_group(
+    request: Request,
+    group_id: int,
+    component: Literal["header"],
+    db: Annotated[Session, Depends(get_db)],
+):
+    form_data = await request.form()
+    group = schemas.PartialGroup(**form_data)  # type: ignore
+    db_group: PositionGroup | None = db.query(PositionGroup).get(group_id)
+
+    if db_group is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Group not found",
+        )
+
+    if group.name is not None:
+        db_group.name = group.name
+
+    if group.description is not None:
+        db_group.description = group.description
+
+    db.commit()
+
+    return templates.TemplateResponse(
+        COMPONENT_TO_TEMPLATE[component],
         {
             "request": request,
             "group": db_group,

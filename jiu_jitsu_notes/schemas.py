@@ -16,6 +16,11 @@ class NewGroup(BaseModel):
     description: str
 
 
+class PartialGroup(BaseModel):
+    name: str | None = Field(None)
+    description: str | None = Field(None)
+
+
 class NewTechnique(BaseModel):
     name: str
     description: str

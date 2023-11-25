@@ -17,10 +17,7 @@
           <a href="/group/{{ group.id }}" class="hover:underline">{{ group.name }}</a>
         </div>
 
-        <div>
-          <h2 class="text-4xl font-semibold">{{ group.name }}</h2>
-          <p class="text-gray-600 pt-2">{{group.description }}</p>
-        </div>
+        {% include "components/group/header/static.html" %}
 
         <form
           hx-post="/positions/list?groupId={{ group.id }}"

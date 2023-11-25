@@ -1,0 +1,28 @@
+<form
+  hx-put="/api/groups/{{ group.id }}?component=header"
+  hx-swap="outerHTML"
+  class="flex flex-col gap-3"
+>
+  <input
+    type="text"
+    name="name"
+    placeholder="Name"
+    class="px-2 py-1.5 border rounded-md text-2xl"
+    value="{{ group.name }}"
+  />
+  
+  <input
+    type="text"
+    name="description"
+    placeholder="Description"
+    class="px-2 py-1.5 border rounded-md"
+    value="{{ group.description }}"
+  />
+
+  <button
+    type="submit"
+    class="bg-slate-700 px-2 py-1.5 text-white"
+  >
+    Save
+  </button>
+</form>

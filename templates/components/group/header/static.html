@@ -1,0 +1,7 @@
+<div
+  hx-get="/api/groups/{{ group.id }}?component=header-editable"
+  hx-swap="outerHTML"
+>
+  <h2 class="text-4xl font-semibold">{{ group.name }}</h2>
+  <p class="text-gray-600 pt-2">{{group.description }}</p>
+</div>
