@@ -5,7 +5,7 @@
 >
   <div class="flex flex-col gap-3">
     <div
-      hx-get="/positions/{{ position.id }}/editable"
+      hx-get="/api/positions/{{ position.id }}/editable"
       hx-target="#{{ position.name.lower().replace(' ', '-') }}"
       hx-swap="outerHTML"
       hx-trgger="click"
@@ -21,7 +21,7 @@
     </div>
     
     <button
-      hx-post="/positions/{{ position.id}}/techniques/editable"
+      hx-post="/api/positions/{{ position.id}}/techniques/editable"
       hx-swap="beforeend"
       hx-target="#{{ position_id }}-technique-list"
       class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32 mt-3"

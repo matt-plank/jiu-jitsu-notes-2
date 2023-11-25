@@ -1,5 +1,5 @@
 <form
-  hx-put="/positions/{{ position.id }}"
+  hx-put="/api/positions/{{ position.id }}"
   hx-swap="outerHTML"
   hx-trigger="submit"
   class="flex flex-col gap-10"
@@ -30,7 +30,7 @@
       <button
         type="submit"
         class="px-2 p-1 rounded-md bg-red-700 text-white w-full"
-        hx-delete="/positions/{{ position.id }}"
+        hx-delete="/api/positions/{{ position.id }}"
         hx-target="closest form"
       >
         Delete

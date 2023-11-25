@@ -5,8 +5,8 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ..db import get_db
-from ..models import PositionGroup
+from ...db import get_db
+from ...models import PositionGroup
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")

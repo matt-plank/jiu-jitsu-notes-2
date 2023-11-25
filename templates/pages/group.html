@@ -20,7 +20,7 @@
         {% include "components/group/header/readonly.html" %}
 
         <form
-          hx-post="/positions/list?groupId={{ group.id }}"
+          hx-post="/api/positions/list?groupId={{ group.id }}"
           hx-target="#positions"
           hx-swap="innerHTML"
           class="flex gap-2"
@@ -46,7 +46,7 @@
         </div>
 
         <button
-          hx-post="/positions/editable?groupId={{ group.id }}"
+          hx-post="/api/positions/editable?groupId={{ group.id }}"
           hx-target="#positions"
           hx-swap="beforeend"
           class="bg-slate-700 text-white px-2 py-1.5 rounded-md w-32"

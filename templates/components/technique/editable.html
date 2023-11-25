@@ -1,5 +1,5 @@
 <form
-  hx-put="/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}"
+  hx-put="/api/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}"
   hx-swap="outerHTML"
   class="flex flex-col gap-2 my-5"
 >
@@ -42,7 +42,7 @@
     </button>
 
     <button
-      hx-delete="/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}"
+      hx-delete="/api/positions/{{ technique.from_position_id }}/techniques/{{ technique.id }}"
       hx-target="closest form"
       hx-swap="outerHTML"
       class="bg-red-700 text-white px-2 py-1.5 rounded-md"

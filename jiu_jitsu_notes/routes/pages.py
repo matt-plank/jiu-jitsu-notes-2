@@ -59,3 +59,23 @@ async def group_page(
             "group": group,
         },
     )
+
+
+@router.get("/login")
+async def login_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/login.html",
+        {
+            "request": request,
+        },
+    )
+
+
+@router.get("/")
+async def register_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/register.html",
+        {
+            "request": request,
+        },
+    )
