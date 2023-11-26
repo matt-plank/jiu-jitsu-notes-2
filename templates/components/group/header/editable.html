@@ -19,10 +19,21 @@
     value="{{ group.description }}"
   />
 
-  <button
-    type="submit"
-    class="bg-slate-700 px-2 py-1.5 text-white"
-  >
-    Save
-  </button>
+  <div class="flex gap-3">
+    <button
+      type="submit"
+      class="bg-slate-700 px-2 py-1.5 text-white rounded-md w-full"
+    >
+      Save
+    </button>
+
+    <button
+      hx-delete="/api/groups/{{ group.id }}"
+      hx-target="closest form"
+      class="bg-red-700 px-2 py-1.5 text-white rounded-md w-full"
+    >
+      Delete
+    </button>
+  </div>
+
 </form>

@@ -2,6 +2,7 @@ from typing import Annotated, Literal, Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.requests import Request
+from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -134,4 +135,25 @@ async def update_group(
             "request": request,
             "group": db_group,
         },
+    )
+
+
+@router.delete("/{group_id}")
+async def delete_group(
+    group_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
+    group: PositionGroup | None = db.query(PositionGroup).get(group_id)
+
+    if group is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Group not found",
+        )
+
+    db.delete(group)
+    db.commit()
+
+    return Response(
+        headers={"HX-Redirect": "/groups/"},
     )
