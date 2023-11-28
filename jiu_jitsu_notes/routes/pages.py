@@ -5,19 +5,23 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ..db import get_db
-from ..models import PositionGroup
+from .. import db
+from ..models import PositionGroup, User
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")
-async def index(request: Request):
+async def index(
+    request: Request,
+    user: Annotated[User, Depends(db.get_current_user)],
+):
     return templates.TemplateResponse(
         "pages/index.html",
         {
             "request": request,
+            "user": user,
         },
     )
 
@@ -25,14 +29,16 @@ async def index(request: Request):
 @router.get("/groups")
 async def groups_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    groups: list[PositionGroup] = db.query(PositionGroup).all()
+    groups: list[PositionGroup] = db.all_groups_for_user(session, user)
 
     return templates.TemplateResponse(
         "pages/all_groups.html",
         {
             "request": request,
+            "user": user,
             "groups": groups,
         },
     )
@@ -42,9 +48,10 @@ async def groups_page(
 async def group_page(
     request: Request,
     group_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    group: list[PositionGroup] | None = db.query(PositionGroup).get(group_id)
+    group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
     if group is None:
         raise HTTPException(
@@ -57,6 +64,7 @@ async def group_page(
         {
             "request": request,
             "group": group,
+            "user": user,
         },
     )
 

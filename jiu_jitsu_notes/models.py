@@ -6,10 +6,24 @@ class Base(DeclarativeBase):
     ...
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str]
+
+    groups: Mapped[list["PositionGroup"]] = relationship(back_populates="user")
+    positions: Mapped[list["Position"]] = relationship(back_populates="user")
+    techniques: Mapped[list["Technique"]] = relationship(back_populates="user")
+
+
 class PositionGroup(Base):
     __tablename__ = "position_groups"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user: Mapped[User] = relationship(back_populates="groups")
+
     name: Mapped[str]
     description: Mapped[str]
 
@@ -20,6 +34,8 @@ class Position(Base):
     __tablename__ = "positions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user: Mapped[User] = relationship(back_populates="positions")
 
     name: Mapped[str]
     description: Mapped[str]
@@ -43,6 +59,8 @@ class Technique(Base):
     __tablename__ = "techniques"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user: Mapped[User] = relationship(back_populates="techniques")
 
     name: Mapped[str]
     description: Mapped[str]

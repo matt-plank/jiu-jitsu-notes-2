@@ -6,8 +6,8 @@ from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ...db import get_db
-from ...models import PositionGroup
+from ... import db
+from ...models import PositionGroup, User
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -24,7 +24,8 @@ COMPONENT_TO_TEMPLATE: dict[str, str] = {
 async def get_groups(
     request: Request,
     component: Literal["list-item-new"],
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -32,7 +33,7 @@ async def get_groups(
             detail="Invalid component",
         )
 
-    groups: list[PositionGroup] = db.query(PositionGroup).all()
+    groups: list[PositionGroup] = db.all_groups_for_user(session, user)
 
     return templates.TemplateResponse(
         COMPONENT_TO_TEMPLATE[component],
@@ -48,7 +49,8 @@ async def get_group(
     request: Request,
     group_id: int,
     component: Literal["list-item", "header-editable"],
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -56,7 +58,7 @@ async def get_group(
             detail="Invalid component",
         )
 
-    group: PositionGroup | None = db.query(PositionGroup).get(group_id)
+    group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
     if group is None:
         raise HTTPException(
@@ -79,7 +81,8 @@ async def create_group(
     component: Literal["list-item"],
     name: Annotated[str, Form()],
     description: Annotated[str, Form()],
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -87,13 +90,7 @@ async def create_group(
             detail="Invalid component",
         )
 
-    db_group = PositionGroup(
-        name=name,
-        description=description,
-    )
-
-    db.add(db_group)
-    db.commit()
+    db_group = db.create_group(session, user, name, description)
 
     return templates.TemplateResponse(
         "components/group/list_item/readonly.html",
@@ -111,39 +108,10 @@ async def update_group(
     name: Annotated[Optional[str], Form()],
     description: Annotated[Optional[str], Form()],
     component: Literal["header"],
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    db_group: PositionGroup | None = db.query(PositionGroup).get(group_id)
-
-    if db_group is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Group not found",
-        )
-
-    if name is not None:
-        db_group.name = name
-
-    if description is not None:
-        db_group.description = description
-
-    db.commit()
-
-    return templates.TemplateResponse(
-        COMPONENT_TO_TEMPLATE[component],
-        {
-            "request": request,
-            "group": db_group,
-        },
-    )
-
-
-@router.delete("/{group_id}")
-async def delete_group(
-    group_id: int,
-    db: Annotated[Session, Depends(get_db)],
-):
-    group: PositionGroup | None = db.query(PositionGroup).get(group_id)
+    group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
     if group is None:
         raise HTTPException(
@@ -151,8 +119,33 @@ async def delete_group(
             detail="Group not found",
         )
 
-    db.delete(group)
-    db.commit()
+    group = db.update_group(session, group, name, description)
+
+    return templates.TemplateResponse(
+        COMPONENT_TO_TEMPLATE[component],
+        {
+            "request": request,
+            "group": group,
+        },
+    )
+
+
+@router.delete("/{group_id}")
+async def delete_group(
+    group_id: int,
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
+):
+    group: PositionGroup | None = db.group_by_id(session, user, group_id)
+
+    if group is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Group not found",
+        )
+
+    session.delete(group)
+    session.commit()
 
     return Response(
         headers={"HX-Redirect": "/groups/"},

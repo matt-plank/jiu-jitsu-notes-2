@@ -5,8 +5,8 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ....db import get_db
-from ....models import Position, Technique
+from .... import db
+from ....models import Position, Technique, User
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -17,9 +17,10 @@ async def get_editable_for_position(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+    technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
     if technique is None:
         raise HTTPException(
@@ -38,7 +39,7 @@ async def get_editable_for_position(
         {
             "request": request,
             "technique": technique,
-            "positions": db.query(Position).all(),
+            "positions": db.all_positions_for_user(session, user),
         },
     )
 
@@ -47,13 +48,14 @@ async def get_editable_for_position(
 async def create_editable(
     request: Request,
     from_position_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
     return templates.TemplateResponse(
         "components/technique/new.html",
         {
             "request": request,
             "from_position_id": from_position_id,
-            "positions": db.query(Position).all(),
+            "positions": db.all_positions_for_user(session, user),
         },
     )

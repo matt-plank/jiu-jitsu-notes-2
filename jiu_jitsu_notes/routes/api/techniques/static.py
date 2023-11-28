@@ -1,14 +1,13 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.requests import Request
 from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from .... import schemas
-from ....db import get_db
-from ....models import Technique
+from .... import db
+from ....models import Technique, User
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -19,9 +18,10 @@ async def get_single_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+    technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
     if technique is None:
         raise HTTPException(
@@ -49,9 +49,10 @@ async def get_detailed_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+    technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
     if technique is None:
         raise HTTPException(
@@ -79,9 +80,13 @@ async def update_single_technique(
     request: Request,
     from_position_id: int,
     technique_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
+    name: Annotated[Optional[str], Form()] = None,
+    description: Annotated[Optional[str], Form()] = None,
+    to_position_id: Annotated[Optional[int], Form()] = None,
 ):
-    db_technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+    db_technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
     if db_technique is None:
         raise HTTPException(
@@ -95,19 +100,16 @@ async def update_single_technique(
             detail=f"No technique with id {technique_id!r} belongs to this position",
         )
 
-    form_data = await request.form()
-    technique = schemas.PartialTechnique(**form_data)  # type: ignore
+    if name is not None:
+        db_technique.name = name
 
-    if technique.name is not None:
-        db_technique.name = technique.name
+    if description is not None:
+        db_technique.description = description
 
-    if technique.description is not None:
-        db_technique.description = technique.description
+    if to_position_id is not None:
+        db_technique.to_position_id = to_position_id
 
-    if technique.to_position_id is not None:
-        db_technique.to_position_id = technique.to_position_id
-
-    db.commit()
+    session.commit()
 
     return templates.TemplateResponse(
         "components/technique/readonly.html",
@@ -122,25 +124,26 @@ async def update_single_technique(
 async def create_technique(
     request: Request,
     from_position_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
+    name: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    to_position_id: Annotated[Optional[int], Form()] = None,
 ):
-    form_data = await request.form()
-
-    technique = schemas.NewTechnique(
-        **form_data,  # type: ignore
-        from_position_id=from_position_id,
+    technique = db.create_technique(
+        session,
+        user,
+        name,
+        description,
+        from_position_id,
+        to_position_id,
     )
-
-    db_technique = Technique(**technique.model_dump())
-
-    db.add(db_technique)
-    db.commit()
 
     return templates.TemplateResponse(
         "components/technique/readonly.html",
         {
             "request": request,
-            "technique": db_technique,
+            "technique": technique,
         },
     )
 
@@ -149,9 +152,10 @@ async def create_technique(
 async def delete_technique(
     from_position_id: int,
     technique_id: int,
-    db: Annotated[Session, Depends(get_db)],
+    session: Annotated[Session, Depends(db.get_session)],
+    user: Annotated[User, Depends(db.get_current_user)],
 ):
-    technique: Technique | None = db.query(Technique).filter_by(id=technique_id).first()
+    technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
     if technique is None:
         raise HTTPException(
@@ -165,7 +169,7 @@ async def delete_technique(
             detail=f"No technique with id {technique_id!r} belongs to this position",
         )
 
-    db.delete(technique)
-    db.commit()
+    session.delete(technique)
+    session.commit()
 
     return Response()
