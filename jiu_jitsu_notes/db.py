@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
+from passlib import hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -104,6 +105,23 @@ def create_technique(
 
 def user_by_email(session: Session, email: str) -> User | None:
     return session.query(User).filter_by(email=email).first()
+
+
+def user_by_username(session: Session, username: str) -> User | None:
+    return session.query(User).filter_by(username=username).first()
+
+
+def create_user(session: Session, username: str, email: str, password: str) -> User | None:
+    user = User(
+        username=username,
+        email=email,
+        password_hash=hash.bcrypt.hash(password),
+    )
+
+    session.add(user)
+    session.commit()
+
+    return user
 
 
 def token_from_string(session: Session, token: str) -> Token | None:

@@ -52,3 +52,37 @@ async def logout(
     response.headers["hx-redirect"] = "/"
 
     return response
+
+
+@router.post("/account")
+async def create_account(
+    request: Request,
+    username: Annotated[str, Form()],
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+    session: Annotated[Session, Depends(db.get_session)],
+):
+    if db.user_by_username(session, username) is not None:
+        return templates.TemplateResponse(
+            "components/auth/error.html",
+            {
+                "request": request,
+                "message": "An account with that username already exists",
+            },
+        )
+
+    if db.user_by_email(session, email) is not None:
+        return templates.TemplateResponse(
+            "components/auth/error.html",
+            {
+                "request": request,
+                "message": "An account with that email already exists",
+            },
+        )
+
+    db.create_user(session, username, email, password)
+
+    response = Response()
+    response.headers["hx-redirect"] = "/login"
+
+    return response
