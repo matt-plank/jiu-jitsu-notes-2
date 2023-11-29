@@ -1,3 +1,6 @@
+from datetime import datetime
+from typing import Optional
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -11,10 +14,25 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str]
+    email: Mapped[str]
+    password_hash: Mapped[str]
+
+    token_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tokens.id"))
+    token: Mapped[Optional["Token"]] = relationship(back_populates="user")
 
     groups: Mapped[list["PositionGroup"]] = relationship(back_populates="user")
     positions: Mapped[list["Position"]] = relationship(back_populates="user")
     techniques: Mapped[list["Technique"]] = relationship(back_populates="user")
+
+
+class Token(Base):
+    __tablename__ = "tokens"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user: Mapped[User] = relationship(back_populates="token", uselist=False)
+
+    token: Mapped[str]
+    created_at: Mapped[datetime]
 
 
 class PositionGroup(Base):

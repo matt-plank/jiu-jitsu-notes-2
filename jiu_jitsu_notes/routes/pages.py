@@ -5,7 +5,7 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from .. import db
+from .. import auth, db
 from ..models import PositionGroup, User
 
 router = APIRouter()
@@ -15,13 +15,11 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/")
 async def index(
     request: Request,
-    user: Annotated[User, Depends(db.get_current_user)],
 ):
     return templates.TemplateResponse(
         "pages/index.html",
         {
             "request": request,
-            "user": user,
         },
     )
 
@@ -30,7 +28,7 @@ async def index(
 async def groups_page(
     request: Request,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     groups: list[PositionGroup] = db.all_groups_for_user(session, user)
 
@@ -49,7 +47,7 @@ async def group_page(
     request: Request,
     group_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -79,7 +77,7 @@ async def login_page(request: Request):
     )
 
 
-@router.get("/")
+@router.get("/register")
 async def register_page(request: Request):
     return templates.TemplateResponse(
         "pages/register.html",

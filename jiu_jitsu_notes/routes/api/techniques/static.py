@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from .... import db
+from .... import auth, db
 from ....models import Technique, User
 
 router = APIRouter()
@@ -19,7 +19,7 @@ async def get_single_technique(
     from_position_id: int,
     technique_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
@@ -50,7 +50,7 @@ async def get_detailed_technique(
     from_position_id: int,
     technique_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
@@ -81,7 +81,7 @@ async def update_single_technique(
     from_position_id: int,
     technique_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
     name: Annotated[Optional[str], Form()] = None,
     description: Annotated[Optional[str], Form()] = None,
     to_position_id: Annotated[Optional[int], Form()] = None,
@@ -125,7 +125,7 @@ async def create_technique(
     request: Request,
     from_position_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
     name: Annotated[str, Form()],
     description: Annotated[str, Form()],
     to_position_id: Annotated[Optional[int], Form()] = None,
@@ -153,7 +153,7 @@ async def delete_technique(
     from_position_id: int,
     technique_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     technique: Technique | None = db.technique_by_id(session, user, technique_id)
 

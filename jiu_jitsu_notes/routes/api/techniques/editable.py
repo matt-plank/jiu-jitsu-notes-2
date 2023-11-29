@@ -5,8 +5,8 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from .... import db
-from ....models import Position, Technique, User
+from .... import auth, db
+from ....models import Technique, User
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -18,7 +18,7 @@ async def get_editable_for_position(
     from_position_id: int,
     technique_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     technique: Technique | None = db.technique_by_id(session, user, technique_id)
 
@@ -49,7 +49,7 @@ async def create_editable(
     request: Request,
     from_position_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     return templates.TemplateResponse(
         "components/technique/new.html",

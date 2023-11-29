@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ... import db
+from ... import auth, db
 from ...models import PositionGroup, User
 
 router = APIRouter()
@@ -25,7 +25,7 @@ async def get_groups(
     request: Request,
     component: Literal["list-item-new"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -50,7 +50,7 @@ async def get_group(
     group_id: int,
     component: Literal["list-item", "header-editable"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -82,7 +82,7 @@ async def create_group(
     name: Annotated[str, Form()],
     description: Annotated[str, Form()],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     if component not in COMPONENT_TO_TEMPLATE:
         raise HTTPException(
@@ -109,7 +109,7 @@ async def update_group(
     description: Annotated[Optional[str], Form()],
     component: Literal["header"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -134,7 +134,7 @@ async def update_group(
 async def delete_group(
     group_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 

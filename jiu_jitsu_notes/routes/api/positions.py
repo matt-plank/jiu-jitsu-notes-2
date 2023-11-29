@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ... import db
+from ... import auth, db
 from ...models import Position, PositionGroup, User
 
 router = APIRouter()
@@ -27,7 +27,7 @@ async def get_all_positions(
     group_id: int,
     component: Literal["list", "list-item-new"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -53,7 +53,7 @@ async def get_position(
     position_id: int,
     component: Literal["list-item", "list-item-editable"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -89,7 +89,7 @@ async def create_position_in_group(
     description: Annotated[str, Form()],
     component: Literal["list-item"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -126,7 +126,7 @@ async def update_position(
     description: Annotated[Optional[str], Form()],
     component: Literal["list-item"],
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 
@@ -167,7 +167,7 @@ async def delete_position(
     group_id: int,
     position_id: int,
     session: Annotated[Session, Depends(db.get_session)],
-    user: Annotated[User, Depends(db.get_current_user)],
+    user: Annotated[User, Depends(auth.current_user)],
 ):
     group: PositionGroup | None = db.group_by_id(session, user, group_id)
 

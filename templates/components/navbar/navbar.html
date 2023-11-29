@@ -1,0 +1,20 @@
+<div class="w-full p-3 bg-slate-700 flex justify-between text-white">
+  <h1 class="text-lg">
+    <a href="/">Jiu Jitsu Notes</a>
+  </h1>
+
+  {% if user %}
+  <div class="flex gap-3">
+    <h2>
+      {{ user.username }}
+    </h2>
+
+    <div
+      hx-delete="/api/auth/token"
+      class="cursor-pointer"
+    >
+      Logout
+    </div>
+  </div>
+  {% endif %}
+</div>

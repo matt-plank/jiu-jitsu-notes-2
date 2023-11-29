@@ -1,11 +1,12 @@
 import os
-from typing import Annotated, Optional
+import uuid
+from datetime import datetime
+from typing import Optional
 
-from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from .models import Position, PositionGroup, Technique, User
+from .models import Position, PositionGroup, Technique, Token, User
 
 DATABASE_URI: str = os.environ.get("DATABASE_URI", "sqlite:///jiu_jitsu_notes.db")
 
@@ -19,17 +20,6 @@ def get_session():
         yield session
     finally:
         session.close()
-
-
-def get_current_user(session: Annotated[Session, Depends(get_session)]) -> User:
-    user = session.query(User).get(1)
-
-    if user is None:
-        user = User(id=1, username="test")
-        session.add(user)
-        session.commit()
-
-    return user
 
 
 def group_by_id(session: Session, user: User, group_id: int) -> PositionGroup | None:
@@ -110,3 +100,31 @@ def create_technique(
     session.commit()
 
     return technique
+
+
+def user_by_email(session: Session, email: str) -> User | None:
+    return session.query(User).filter_by(email=email).first()
+
+
+def token_from_string(session: Session, token: str) -> Token | None:
+    return session.query(Token).filter_by(token=token).first()
+
+
+def create_token_for_user(session: Session, user: User) -> Token:
+    token = Token(
+        token=str(uuid.uuid4()),
+        created_at=datetime.utcnow(),
+    )
+
+    session.add(token)
+
+    user.token = token
+
+    session.commit()
+
+    return token
+
+
+def delete_token_for_user(session: Session, user: User) -> None:
+    session.delete(user.token)
+    session.commit()
